@@ -21,7 +21,15 @@ namespace Comparation
 
         public static IEqualityComparer<Subject> AndUsing<Subject>(
             this IEqualityComparer<Subject> equality,
-            IEqualityComparer<Subject> anotherEquality)
-            => Equality<Subject>.Singleton.Composite(equality, anotherEquality);
+            IEqualityComparer<Subject> anotherEquality) =>
+            Equality<Subject>.Singleton.Composite(equality, anotherEquality);
+
+        public static IEqualityComparer<IReadOnlyCollection<Subject>> ForCollection<Subject>(
+            this IEqualityComparer<Subject> itemEquality) =>
+            Equality<Subject>.Singleton.Collection(itemEquality);
+
+        public static IEqualityComparer<IReadOnlyCollection<Subject>> ForSequence<Subject>(
+            this IEqualityComparer<Subject> itemEquality) =>
+            Equality<Subject>.Singleton.Sequence(itemEquality);
     }
 }

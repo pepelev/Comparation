@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Comparation
 {
-
     public static class Order
     {
         public static Order<T> Of<T>() => Order<T>.Singleton;

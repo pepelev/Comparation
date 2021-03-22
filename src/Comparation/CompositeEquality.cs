@@ -21,7 +21,7 @@ namespace Comparation
 
         public int GetHashCode(Subject obj) => aspects.Aggregate(
             0,
-            (hashCode, aspect) => unchecked (
+            (hashCode, aspect) => unchecked(
                 (hashCode * 397) ^ aspect.GetHashCode(obj)
             )
         );
