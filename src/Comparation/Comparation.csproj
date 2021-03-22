@@ -25,7 +25,7 @@
     <Title>Comparation</Title>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <FileVersion>0.1.0</FileVersion>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>Alexey Pepelev</Authors>
     <Product>Comparation</Product>
     <Description>Comparation is tiny library for work with equality and ordering.</Description>
