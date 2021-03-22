@@ -25,11 +25,11 @@
     <Title>Comparation</Title>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <FileVersion>0.1.0</FileVersion>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <Authors>Alexey Pepelev</Authors>
     <Product>Comparation</Product>
-    <Description>Comparation is tiny library for work with equality and ordering.</Description>
-    <Summary>Comparation is tiny library for work with equality and ordering.</Summary>
+    <Description>Comparation is tiny library for work with equality and order.</Description>
+    <Summary>Comparation is tiny library for work with equality and order.</Summary>
     <PackageTags>order comparer equality equalitycomparer</PackageTags>
     <PackageProjectUrl>https://github.com/pepelev/Comparation</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
