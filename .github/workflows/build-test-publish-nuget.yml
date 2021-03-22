@@ -1,0 +1,45 @@
+name: Build, test and publish
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  main:
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.103
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+
+    - name: Publish on version change
+      id: publish_nuget
+      uses: rohith/publish-nuget@v2
+      with:
+        PROJECT_FILE_PATH: ./src/Comparation/Comparation.csproj
+        VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
+        TAG_COMMIT: true
+        TAG_FORMAT: v*
+        NUGET_KEY: ${{secrets.NUGETKEY}}
+        NUGET_SOURCE: https://api.nuget.org
+        INCLUDE_SYMBOLS: true
