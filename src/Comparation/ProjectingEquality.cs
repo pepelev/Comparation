@@ -14,10 +14,28 @@ namespace Comparation
             this.equality = equality;
         }
 
-        public bool Equals(Subject x, Subject y) => equality.Equals(
-            projection(x),
-            projection(y)
-        );
+        public bool Equals(Subject x, Subject y)
+        {
+            if (ReferenceEquals(x, y))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(x, null))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(y, null))
+            {
+                return false;
+            }
+
+            return equality.Equals(
+                projection(x),
+                projection(y)
+            );
+        }
 
         public int GetHashCode(Subject obj) => equality.GetHashCode(projection(obj));
     }

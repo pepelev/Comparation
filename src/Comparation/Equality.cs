@@ -20,13 +20,11 @@ namespace Comparation
 
         public IEqualityComparer<Subject> By<Projection>(
             Func<Subject, Projection> projection,
-            IEqualityComparer<Projection> equality)
-        {
-            return new ProjectingEquality<Subject, Projection>(projection, equality);
-        }
+            IEqualityComparer<Projection> equality) =>
+            new ProjectingEquality<Subject, Projection>(projection, equality);
 
         public IEqualityComparer<Subject> Composite(params IEqualityComparer<Subject>[] aspects) =>
-            new CompositeEquality<Subject>(aspects);
+            Composite(aspects as IReadOnlyCollection<IEqualityComparer<Subject>>);
 
         public IEqualityComparer<Subject> Composite(IReadOnlyCollection<IEqualityComparer<Subject>> aspects) =>
             new CompositeEquality<Subject>(aspects);
