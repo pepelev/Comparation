@@ -225,7 +225,7 @@ namespace Comparation.Tests
 
         [Test]
         [TestCaseSource(nameof(Equalities))]
-        public void TreatBothNullsAsEqual<T>(IEqualityComparer<T> equality) where T : class
+        public void TreatBothNullsAsEqual(IEqualityComparer<string> equality)
         {
             equality.Equals(null, null).Should().BeTrue();
         }
