@@ -64,5 +64,34 @@ namespace Comparation
                     return 0;
                 }
             );
+
+        public IComparer<IEnumerable<Subject>> Sequence() => Sequence(Comparer<Subject>.Default);
+
+        public IComparer<IEnumerable<Subject>> Sequence(IComparer<Subject> itemOrder) =>
+            Comparer<IEnumerable<Subject>>.Create(
+                (a, b) =>
+                {
+                    using var aEnumerator = a.GetEnumerator();
+                    using var bEnumerator = b.GetEnumerator();
+                    while (true)
+                    {
+                        var aMoved = aEnumerator.MoveNext();
+                        var bMoved = bEnumerator.MoveNext();
+
+                        var comparison = (aMoved, bMoved) switch
+                        {
+                            (false, false) => 0,
+                            (true, false) => 1,
+                            (false, true) => -1,
+                            (true, true) => itemOrder.Compare(aEnumerator.Current, bEnumerator.Current)
+                        };
+
+                        if (comparison is { } result and not 0)
+                        {
+                            return result;
+                        }
+                    }
+                }
+            );
     }
 }

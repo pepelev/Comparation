@@ -38,33 +38,7 @@ namespace Comparation
                 anotherOrder
             );
 
-        public static IComparer<IEnumerable<Subject>> ForSequence<Subject>(this IComparer<Subject> itemOrder)
-        {
-            return Comparer<IEnumerable<Subject>>.Create(
-                (a, b) =>
-                {
-                    using var aEnumerator = a.GetEnumerator();
-                    using var bEnumerator = b.GetEnumerator();
-                    while (true)
-                    {
-                        var aMoved = aEnumerator.MoveNext();
-                        var bMoved = bEnumerator.MoveNext();
-
-                        var comparison = (aMoved, bMoved) switch
-                        {
-                            (false, false) => 0,
-                            (true, false) => 1,
-                            (false, true) => -1,
-                            (true, true) => itemOrder.Compare(aEnumerator.Current, bEnumerator.Current)
-                        };
-
-                        if (comparison is { } result and not 0)
-                        {
-                            return result;
-                        }
-                    }
-                }
-            );
-        }
+        public static IComparer<IEnumerable<Subject>> ForSequence<Subject>(this IComparer<Subject> itemOrder) =>
+            Order<Subject>.Singleton.Sequence(itemOrder);
     }
 }
