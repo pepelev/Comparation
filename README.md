@@ -29,7 +29,8 @@ equality.Equals(new Version(2, 17, 4), new Version(2, 17, 5)); // true
 equality.Equals(new Version(2, 19, 4), new Version(2, 17, 4)); // false, Minor components are different
 ```
 
-This is useful when you need to override equality in your own way or define it for a library type that does not provide proper Equals and GetHashCode methods.
+This is useful when you need to override equality in your own way or define it for a library type
+that does not provide proper `Equals` and `GetHashCode` methods.
 
 You also can pass equality into collections
 
