@@ -32,7 +32,7 @@ equality.Equals(new Version(2, 19, 4), new Version(2, 17, 4)); // false, Minor c
 This is useful when you need to override equality in your own way or define it for a library type
 that does not provide proper `Equals` and `GetHashCode` methods.
 
-You also can pass equality into collections
+You can also pass equality into collections
 
 ```csharp
 var equality = Equality.Of<string>().By(@string => @string.Length);
