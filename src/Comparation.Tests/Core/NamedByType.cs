@@ -3,24 +3,19 @@ using System.Linq;
 
 namespace Comparation.Tests.Core
 {
-    public sealed class NamedByType : NamedTest
+    public sealed class NamedByType<T> : Named<T> where T : class
     {
-        private readonly Test test;
         private readonly string name;
 
-        public NamedByType(string name, Test test)
+        public NamedByType(string name, T value)
         {
-            this.test = test;
             this.name = name;
+            Value = value;
         }
 
-        public override void Run()
-        {
-            test.Run();
-        }
-
+        public override T Value { get; }
         public override string Name => $"{TypeName}({name})";
-        private string TypeName => PrettyName(test.GetType());
+        private string TypeName => PrettyName(Value.GetType());
 
         private static string PrettyName(Type type)
         {

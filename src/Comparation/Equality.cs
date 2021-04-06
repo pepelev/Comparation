@@ -29,16 +29,16 @@ namespace Comparation
         public IEqualityComparer<Subject> Composite(IReadOnlyCollection<IEqualityComparer<Subject>> aspects) =>
             new CompositeEquality<Subject>(aspects);
 
-        public IEqualityComparer<IReadOnlyCollection<Subject>> Collection() =>
+        public IEqualityComparer<IReadOnlyCollection<Subject?>> Collection() =>
             Collection(EqualityComparer<Subject>.Default);
 
-        public IEqualityComparer<IReadOnlyCollection<Subject>> Collection(IEqualityComparer<Subject> itemEquality) =>
+        public IEqualityComparer<IReadOnlyCollection<Subject?>> Collection(IEqualityComparer<Subject> itemEquality) =>
             new CollectionEquality<Subject>(itemEquality);
 
-        public IEqualityComparer<IReadOnlyCollection<Subject>> Sequence() =>
+        public IEqualityComparer<IReadOnlyCollection<Subject?>> Sequence() =>
             Sequence(EqualityComparer<Subject>.Default);
 
-        public IEqualityComparer<IReadOnlyCollection<Subject>> Sequence(IEqualityComparer<Subject> itemEquality) =>
+        public IEqualityComparer<IReadOnlyCollection<Subject?>> Sequence(IEqualityComparer<Subject> itemEquality) =>
             new SequenceEquality<Subject>(itemEquality);
     }
 }

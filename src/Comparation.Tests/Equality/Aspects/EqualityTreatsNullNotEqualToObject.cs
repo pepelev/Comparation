@@ -4,25 +4,20 @@ using FluentAssertions;
 
 namespace Comparation.Tests.Equality.Aspects
 {
-    public sealed class EqualityShouldBeCommutative<T> : Test
+    public sealed class EqualityTreatsNullNotEqualToObject<T> : Test where T : class
     {
-        private readonly T a;
-        private readonly T b;
         private readonly IEqualityComparer<T> equality;
+        private readonly T a;
 
-        public EqualityShouldBeCommutative(IEqualityComparer<T> equality, T a, T b)
+        public EqualityTreatsNullNotEqualToObject(IEqualityComparer<T> equality, T a)
         {
             this.equality = equality;
             this.a = a;
-            this.b = b;
         }
 
         public override void Run()
         {
-            var ab = equality.Equals(a, b);
-            var ba = equality.Equals(b, a);
-
-            ab.Should().Be(ba);
+            equality.Equals(a, null).Should().BeFalse();
         }
     }
 }

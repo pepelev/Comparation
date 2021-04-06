@@ -11,7 +11,7 @@ namespace Comparation
             this.equality = equality;
         }
 
-        public bool Equals(T x, T y)
+        public bool Equals(T? x, T? y)
         {
             if (ReferenceEquals(x, y))
             {

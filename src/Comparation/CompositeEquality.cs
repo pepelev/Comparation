@@ -17,7 +17,7 @@ namespace Comparation
             this.aspects = aspects;
         }
 
-        public bool Equals(Subject x, Subject y)
+        public bool Equals(Subject? x, Subject? y)
         {
             if (ReferenceEquals(x, y))
             {
@@ -37,11 +37,19 @@ namespace Comparation
             return aspects.All(aspect => aspect.Equals(x, y));
         }
 
-        public int GetHashCode(Subject obj) => aspects.Aggregate(
-            0,
-            (hashCode, aspect) => unchecked(
-                (hashCode * 397) ^ aspect.GetHashCode(obj)
-            )
-        );
+        public int GetHashCode(Subject obj)
+        {
+            if (obj is null)
+            {
+                return 0;
+            }
+
+            return aspects.Aggregate(
+                0,
+                (hashCode, aspect) => unchecked(
+                    (hashCode * 397) ^ aspect.GetHashCode(obj)
+                )
+            );
+        }
     }
 }
