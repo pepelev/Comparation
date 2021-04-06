@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace Comparation
 {
-    public sealed class SequenceEquality<T> : IEqualityComparer<IEnumerable<T>>
+    public sealed class SequenceEquality<T> : IEqualityComparer<IEnumerable<T?>>
     {
         private readonly IEqualityComparer<T> itemEquality;
 
@@ -12,7 +13,7 @@ namespace Comparation
             this.itemEquality = itemEquality;
         }
 
-        public bool Equals(IEnumerable<T> x, IEnumerable<T> y)
+        public bool Equals(IEnumerable<T?>? x, IEnumerable<T?>? y)
         {
             if (ReferenceEquals(x, y))
             {
@@ -36,17 +37,42 @@ namespace Comparation
                 ({ } xCount, { } yCount) => xCount == yCount && Fallback()
             };
 
-            bool Fallback() => x.SequenceEqual(y);
+            bool Fallback()
+            {
+                using var xEnumerator = x.GetEnumerator();
+                using var yEnumerator = y.GetEnumerator();
+                while (true)
+                {
+                    switch (xEnumerator.MoveNext(), yEnumerator.MoveNext())
+                    {
+                        case (false, false):
+                            return true;
+                        case (true, true):
+                            if (!itemEquality.Equals(xEnumerator.Current!, yEnumerator.Current!))
+                            {
+                                return false;
+                            }
+
+                            continue;
+                        default:
+                            return false;
+                    }
+                }
+            }
         }
 
-        public int GetHashCode(IEnumerable<T> obj) => obj.Aggregate(
+        public int GetHashCode(IEnumerable<T?> obj) => obj.Aggregate(
             0,
-            (hashCode, item) => unchecked(
-                (hashCode * 397) ^ itemEquality.GetHashCode(item)
-            )
-        );
+            (hashCode, item) =>
+            {
+                var itemHashCode = item is { } value
+                    ? itemEquality.GetHashCode(value)
+                    : 0;
 
-        private static int? GuessCount(IEnumerable<T> x) => x switch
+                return unchecked((hashCode * 397) ^ itemHashCode);
+            });
+
+        private static int? GuessCount([NoEnumeration] IEnumerable<T?> x) => x switch
         {
             IReadOnlyCollection<T> collection => collection.Count,
             _ => null

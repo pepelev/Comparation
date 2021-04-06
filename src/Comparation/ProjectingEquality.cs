@@ -14,7 +14,7 @@ namespace Comparation
             this.equality = equality;
         }
 
-        public bool Equals(Subject x, Subject y)
+        public bool Equals(Subject? x, Subject? y)
         {
             if (ReferenceEquals(x, y))
             {
@@ -37,6 +37,8 @@ namespace Comparation
             );
         }
 
-        public int GetHashCode(Subject obj) => equality.GetHashCode(projection(obj));
+        public int GetHashCode(Subject obj) => projection(obj) is { } value
+            ? equality.GetHashCode(value)
+            : 0;
     }
 }

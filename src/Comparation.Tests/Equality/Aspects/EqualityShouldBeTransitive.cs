@@ -26,7 +26,10 @@ namespace Comparation.Tests.Equality.Aspects
             var ac = equality.Equals(a, c);
             var bc = equality.Equals(b, c);
 
-            new[] {ab, ac, bc}.Distinct().Should().HaveCount(1);
+            if (ab && bc)
+            {
+                ac.Should().BeTrue();
+            }
         }
     }
 }
