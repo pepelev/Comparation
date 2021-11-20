@@ -14,7 +14,10 @@ namespace Comparation.Tests.Equality
                 new ExampleTests(),
                 new Commutative(),
                 new TreatNullsAsEqual(),
-                new GiveSameHashCodeForEqualObjects()
+                new GiveSameHashCodeForEqualObjects(),
+                new TreatTreatsNullNotEqualToObject(),
+                new Transitive(),
+                new Equal()
             )
             .Select(@case => new NamePrefixing<Test>("Equality", @case))
             .Select(@case => new TestCaseData(@case.Value).SetName(@case.Name).SetCategory("Equality"))

@@ -11,25 +11,8 @@ namespace Comparation.Tests.Equality.Tests
         public IEnumerator<Named<Test>> GetEnumerator()
         {
             return Sequence.Concat(
-                    EqualWaysOfComposition(),
-                    IsTransitive()
+                    EqualWaysOfComposition()
                 ).GetEnumerator();
-        }
-
-        private static IEnumerable<Named<Test>> IsTransitive()
-        {
-            var equality = Comparation.Equality.Of<string>()
-                .By(@string => @string.Length)
-                .AndBy(@string => @string[0]);
-
-            return
-                from a in Strings.All
-                from b in Strings.All
-                from c in Strings.All
-                select new NamedByType<Test>(
-                    $"{a} - {b} - {c}",
-                    new EqualityShouldBeTransitive<string>(equality, a, b, c)
-                );
         }
 
         private static IEnumerable<Named<Test>> EqualWaysOfComposition()

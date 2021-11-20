@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Comparation\Comparation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Order\Tests\" />
+  </ItemGroup>
+
 </Project>
