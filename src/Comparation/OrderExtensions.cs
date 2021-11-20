@@ -5,11 +5,22 @@ namespace Comparation
 {
     public static class OrderExtensions
     {
-        public static T Max<T>(this IComparer<T> order, T a, T b) => order.Compare(a, b) > 0
+        public static int ToInt(this Order.Sign sign) => (int) sign;
+
+        public static Order.Sign Invert(this Order.Sign sign) => sign switch
+        {
+            Order.Sign.Less => Order.Sign.Greater,
+            Order.Sign.Greater => Order.Sign.Less,
+            _ => Order.Sign.Equal
+        };
+
+        public static Order.Sign Sign<T>(this IComparer<T> order, T a, T b) => Order.GetSign(order.Compare(a, b));
+
+        public static T Max<T>(this IComparer<T> order, T a, T b) => order.Sign(a, b) == Order.Sign.Greater
             ? a
             : b;
 
-        public static T Min<T>(this IComparer<T> order, T a, T b) => order.Compare(a, b) <= 0
+        public static T Min<T>(this IComparer<T> order, T a, T b) => order.Sign(a, b) != Order.Sign.Greater
             ? a
             : b;
 

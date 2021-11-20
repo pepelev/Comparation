@@ -35,26 +35,25 @@ namespace Comparation.Tests
 
         private static IEnumerable<string?> NonNullNullable => NonNull;
         public static IEnumerable<string?> All => NonNullNullable.Append(null);
+        public static IEnumerable<IReadOnlyCollection<string?>> Collections => Pick(All);
+        public static IEnumerable<IReadOnlyCollection<string>> NonNullableCollections => Pick(NonNull);
 
-        public static IEnumerable<IReadOnlyCollection<string?>> Collections
+        private static IEnumerable<IReadOnlyCollection<T>> Pick<T>(IEnumerable<T> sequence)
         {
-            get
+            var all = sequence.ToList();
+            var random = new Random();
+            for (var i = 0; i < 10; i++)
             {
-                var all = All.ToList();
-                var random = new Random();
-                for (var i = 0; i < 10; i++)
+                var size = random.Next(0, 16);
+                var collection = new List<T>();
+                for (var j = 0; j < size; j++)
                 {
-                    var size = random.Next(0, 16);
-                    var collection = new List<string?>();
-                    for (var j = 0; j < size; j++)
-                    {
-                        collection.Add(
-                            all[random.Next(all.Count)]
-                        );
-                    }
-
-                    yield return collection;
+                    collection.Add(
+                        all[random.Next(all.Count)]
+                    );
                 }
+
+                yield return collection;
             }
         }
     }

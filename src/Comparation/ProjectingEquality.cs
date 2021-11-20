@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Comparation
 {
+    // todo make interface generic parameter nullable
     public sealed class ProjectingEquality<Subject, Projection> : IEqualityComparer<Subject>
     {
         private readonly Func<Subject, Projection> projection;

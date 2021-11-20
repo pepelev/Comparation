@@ -15,6 +15,8 @@ namespace Comparation
     {
         internal static Equality<Subject> Singleton { get; } = new();
 
+        public IEqualityComparer<Subject> Default => EqualityComparer<Subject>.Default;
+
         public IEqualityComparer<Subject> By<Projection>(Func<Subject, Projection> projection) =>
             By(projection, EqualityComparer<Projection>.Default);
 

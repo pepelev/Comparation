@@ -9,7 +9,7 @@ __Comparation__ is tiny library for work with equality and ordering.
 Install [NuGet package](https://www.nuget.org/packages/Comparation/) using Package Manager
 
 ```
-Install-Package Comparation -Version 0.1.3
+Install-Package Comparation
 ```
 
 ## Equality
@@ -67,9 +67,9 @@ IComparer<string> order = Order.Of<string>()
     .By(@string => @string[0])
     .ThenBy(@string => @string.Length);
 
-order.Compare("Apple", "Banana"); // -1 (Apple less than Banana) by first letter
-order.Compare("Brown", "Bohr"); // 1 (Brown greater than Bohr) by length since first letters are same
-order.Compare("Cat", "Can"); // 0 (Cat equal to Can) by first letter and length
+order.Compare("Apple", "Banana"); // returns -1, (Apple less than Banana) by first letter
+order.Compare("Brown", "Bohr"); // returns 1, (Brown greater than Bohr) by length since first letters are same
+order.Compare("Cat", "Can"); // returns 0, (Cat equal to Can) by first letter and length
 ```
 
 Order is useful when you need to customize sorting criteria at run time.
@@ -77,11 +77,11 @@ Order is useful when you need to customize sorting criteria at run time.
 Do you want to reverse order? Easy - use `.Invert()`
 
 ```csharp
-var ascendingOrder = Comparer<int>.Default;
+var ascendingOrder = Order.Of<int>().Default;
 var descendingOrder = ascendingOrder.Invert();
 
 var numbers = new List<int> {7, 9, 16, 3};
-numbers.Sort(descendingOrder); // 16, 9, 7, 3
+numbers.Sort(descendingOrder); // returns 16, 9, 7, 3
 ```
 
 With order you can compare sequences like this
@@ -91,6 +91,24 @@ IComparer<IEnumerable<int>> order = Order.Of<int>().Sequence();
 
 var myLuckyNumbers = new[] {1, 7, 32, 14, 4};
 var lotteryNumbers = new[] {1, 7, 32, 28, 4};
-order.Compare(myNumbers, lotteryNumbers); // -1 (14 is less than 28)
-order.Compare(new[] {1, 2, 3}, new[] {1, 2}); // 1 sequences match by prefix, but first is longer
+order.Compare(myNumbers, lotteryNumbers); // returns -1, (14 is less than 28)
+order.Compare(new[] {1, 2, 3}, new[] {1, 2}); // returns 1, sequences match by prefix, but first is longer
+```
+
+Or just get `Max()` value from two
+
+```csharp
+var order = Order.Of<int>().Default;
+
+order.Max(19, 7) // returns 19
+order.Min(19, 7) // returns 7
+```
+
+You can also benefit from `Sign()` extension method to avoid mind-blowing work with `-1`, `0` and `1`
+
+```csharp
+var myLuckyNumbers = new[] {1, 7, 32, 14, 4};
+var lotteryNumbers = new[] {1, 7, 32, 28, 4};
+order.Sign(myNumbers, lotteryNumbers); // returns Sign.Less, (14 is less than 28)
+order.Sign(new[] {1, 2, 3}, new[] {1, 2}); // returns Sign.Greater, sequences match by prefix, but first is longer
 ```

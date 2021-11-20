@@ -5,6 +5,20 @@ namespace Comparation
 {
     public static class Order
     {
+        public enum Sign : sbyte
+        {
+            Less = -1,
+            Equal = 0,
+            Greater = 1
+        }
+
+        public static Sign GetSign(int comparisonResult) => comparisonResult switch
+        {
+            0 => Sign.Equal,
+            < 0 => Sign.Less,
+            > 0 => Sign.Greater
+        };
+
         public static Order<T> Of<T>() => Order<T>.Singleton;
         public static Order<T> Of<T>(T sample) => Of<T>();
     }
@@ -16,6 +30,8 @@ namespace Comparation
         public IComparer<Subject> Trivial { get; } = Comparer<Subject>.Create(
             (_, _) => 0
         );
+
+        public IComparer<Subject> Default => Comparer<Subject>.Default;
 
         public IComparer<Subject> By<Projection>(Func<Subject, Projection> projection) =>
             By(projection, Comparer<Projection>.Default);
@@ -55,9 +71,9 @@ namespace Comparation
                 {
                     foreach (var aspect in aspects)
                     {
-                        if (aspect.Compare(a, b) is { } result and not 0)
+                        if (aspect.Sign(a, b) is { } result and not Order.Sign.Equal)
                         {
-                            return result;
+                            return result.ToInt();
                         }
                     }
 
@@ -78,17 +94,25 @@ namespace Comparation
                         var aMoved = aEnumerator.MoveNext();
                         var bMoved = bEnumerator.MoveNext();
 
-                        var comparison = (aMoved, bMoved) switch
+                        switch (aMoved, bMoved)
                         {
-                            (false, false) => 0,
-                            (true, false) => 1,
-                            (false, true) => -1,
-                            (true, true) => itemOrder.Compare(aEnumerator.Current, bEnumerator.Current)
-                        };
+                            case (false, false):
+                                return Order.Sign.Equal.ToInt();
 
-                        if (comparison is { } result and not 0)
-                        {
-                            return result;
+                            case (true, false):
+                                return Order.Sign.Greater.ToInt();
+
+                            case (false, true):
+                                return Order.Sign.Less.ToInt();
+
+                            case (true, true):
+                                var comparison = itemOrder.Sign(aEnumerator.Current, bEnumerator.Current);
+                                if (comparison != Order.Sign.Equal)
+                                {
+                                    return comparison.ToInt();
+                                }
+
+                                break;
                         }
                     }
                 }

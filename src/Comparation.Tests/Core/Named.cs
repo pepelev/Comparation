@@ -8,6 +8,8 @@
         public static implicit operator Named<T>((string Name, T Value) tuple) =>
             new Plain(tuple.Name, tuple.Value);
 
+        public override string ToString() => Name;
+
         public sealed class Plain : Named<T>
         {
             public Plain(string name, T value)

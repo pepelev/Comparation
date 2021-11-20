@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
 
 namespace Comparation
@@ -32,9 +31,8 @@ namespace Comparation
 
             return (GuessCount(x), GuessCount(y)) switch
             {
-                (null, _) => Fallback(),
-                (_, null) => Fallback(),
-                ({ } xCount, { } yCount) => xCount == yCount && Fallback()
+                ({ } xCount, { } yCount) => xCount == yCount && Fallback(),
+                _ => Fallback()
             };
 
             bool Fallback()
@@ -61,16 +59,20 @@ namespace Comparation
             }
         }
 
-        public int GetHashCode(IEnumerable<T?> obj) => obj.Aggregate(
-            0,
-            (hashCode, item) =>
+        public int GetHashCode(IEnumerable<T?> obj)
+        {
+            var hashCode = 0;
+            foreach (var item in obj)
             {
                 var itemHashCode = item is { } value
                     ? itemEquality.GetHashCode(value)
                     : 0;
 
-                return unchecked((hashCode * 397) ^ itemHashCode);
-            });
+                hashCode = unchecked((hashCode * 397) ^ itemHashCode);
+            }
+
+            return hashCode;
+        }
 
         private static int? GuessCount([NoEnumeration] IEnumerable<T?> x) => x switch
         {

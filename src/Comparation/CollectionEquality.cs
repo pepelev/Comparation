@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Comparation
 {
@@ -40,17 +40,35 @@ namespace Comparation
 
         public int GetHashCode(IReadOnlyCollection<T?> collection)
         {
-            var hashCodes = collection
-                .Select(item => itemEquality.GetHashCode(new Value<T?>(item)))
-                .OrderBy(hashCode => hashCode)
-                .ToList();
+            var count = collection.Count;
+#if NETCOREAPP2_1_OR_GREATER
+            var hashCodes = count <= 1024 / sizeof(int)
+                ? stackalloc int[count]
+                : new int[count];
+#else
+            var hashCodes = new int[count];
+#endif
+            var i = 0;
+            foreach (var item in collection)
+            {
+                hashCodes[i++] = itemEquality.GetHashCode(new Value<T?>(item));
+            }
 
-            return hashCodes.Aggregate(
-                0,
-                (currentHashCode, hashCode) => unchecked(
-                    (currentHashCode * 397) ^ hashCode
-                )
-            );
+#if NETCOREAPP2_1_OR_GREATER
+            hashCodes.Sort();
+#else
+            Array.Sort(hashCodes);
+#endif
+
+            var resultHashCode = 0;
+            foreach (var hashCode in hashCodes)
+            {
+                resultHashCode = unchecked(
+                    (resultHashCode * 397) ^ hashCode
+                );
+            }
+
+            return resultHashCode;
         }
 
         private Dictionary<Value<T?>, int> IndexItemCounts(IEnumerable<T?> x)

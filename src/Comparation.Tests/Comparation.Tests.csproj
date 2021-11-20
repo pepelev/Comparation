@@ -1,13 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>net48;net5.0</TargetFrameworks>
     <OutputPath>..\..\bin\Comparation.Tests</OutputPath>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>9</LangVersion>
 
     <IsPackable>false</IsPackable>
+  </PropertyGroup>
 
+  <PropertyGroup Condition="$(TargetFramework) == 'net48'">
+    <Nullable>annotations</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(TargetFramework) == 'net5.0'">
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
