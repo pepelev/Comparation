@@ -25,8 +25,8 @@ IEqualityComparer<Version> equality = Equality.Of<Version>()
     .By(version => version.Major)
     .AndBy(version => version.Minor);
 
-equality.Equals(new Version(2, 17, 4), new Version(2, 17, 5)); // true
-equality.Equals(new Version(2, 19, 4), new Version(2, 17, 4)); // false, Minor components are different
+equality.Equals(new Version(2, 17, 4), new Version(2, 17, 5)); // returns true
+equality.Equals(new Version(2, 19, 4), new Version(2, 17, 4)); // returns false, Minor components are different
 ```
 
 This is useful when you need to override equality in your own way or define it for a library type
@@ -42,7 +42,7 @@ pets.Add("Dog");
 pets.Add("Cat"); // Bad day for Cat ;), pets already contain element with length 3
 pets.Add("Turtle");
 
-Console.WriteLine(string.Join(", ", pets)); // Dog, Turtle
+Console.WriteLine(string.Join(", ", pets)); // returns Dog, Turtle
 ```
 
 And finally you can easily compare entire collections
@@ -52,10 +52,10 @@ IEqualityComparer<IReadOnlyCollection<string>> equality = Equality.Of<string>().
 
 var required = new[] {"engine", "body", "door", "door", "windshield"};
 var inventory = new[] {"body", "door", "windshield", "engine"};
-equality.Equals(required, inventory); // false - second door is missing
+equality.Equals(required, inventory); // returns false, second door is missing
 
 var deliveries = new[] {"body", "door", "engine", "windshield", "door"};
-equality.Equals(required, deliveries); // true
+equality.Equals(required, deliveries); // returns true
 ```
 
 ## Order
@@ -100,8 +100,8 @@ Or just get `Max()` value from two
 ```csharp
 var order = Order.Of<int>().Default;
 
-order.Max(19, 7) // returns 19
-order.Min(19, 7) // returns 7
+order.Max(19, 7); // returns 19
+order.Min(19, 7); // returns 7
 ```
 
 You can also benefit from `Sign()` extension method to avoid mind-blowing work with `-1`, `0` and `1`
