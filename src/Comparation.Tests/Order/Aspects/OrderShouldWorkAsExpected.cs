@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Comparation.Tests.Core;
 using FluentAssertions;
 
@@ -10,9 +9,9 @@ namespace Comparation.Tests.Order.Aspects
         private readonly IComparer<T> sut;
         private readonly T a;
         private readonly T b;
-        private readonly int expectation;
+        private readonly Comparation.Order.Sign expectation;
 
-        public OrderShouldWorkAsExpected(IComparer<T> sut, T a, T b, int expectation)
+        public OrderShouldWorkAsExpected(IComparer<T> sut, T a, T b, Comparation.Order.Sign expectation)
         {
             this.sut = sut;
             this.a = a;
@@ -22,7 +21,7 @@ namespace Comparation.Tests.Order.Aspects
 
         public override void Run()
         {
-            Math.Sign(sut.Compare(a, b)).Should().Be(expectation);
+            sut.Sign(a, b).Should().Be(expectation);
         }
     }
 }
