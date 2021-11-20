@@ -11,7 +11,7 @@ namespace Comparation.Tests.Equality
     {
         public IEnumerator<TestCaseData> GetEnumerator() => Sequence.Concat(
                 new WorkAsExpected(),
-                new ExampleTests(),
+                new Examples(),
                 new Commutative(),
                 new TreatNullsAsEqual(),
                 new GiveSameHashCodeForEqualObjects(),

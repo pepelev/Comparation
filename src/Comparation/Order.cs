@@ -86,9 +86,9 @@ namespace Comparation
                             (true, true) => itemOrder.Compare(aEnumerator.Current, bEnumerator.Current)
                         };
 
-                        if (comparison is { } result and not 0)
+                        if (comparison != 0)
                         {
-                            return result;
+                            return comparison;
                         }
                     }
                 }

@@ -6,7 +6,7 @@ using Comparation.Tests.Equality.Aspects;
 
 namespace Comparation.Tests.Equality.Tests
 {
-    public sealed class ExampleTests : IEnumerable<Named<Test>>
+    public sealed class Examples : IEnumerable<Named<Test>>
     {
         public IEnumerator<Named<Test>> GetEnumerator()
         {
