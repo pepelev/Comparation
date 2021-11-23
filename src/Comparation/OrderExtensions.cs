@@ -28,6 +28,8 @@ namespace Comparation
             (a, b) => order.Compare(b, a)
         );
 
+        public static bool Equals<T>(this IComparer<T> order, T a, T b) => order.Sign(a, b) == Order.Sign.Equal;
+
         public static IComparer<Subject> ThenBy<Subject, Projection>(
             this IComparer<Subject> order,
             Func<Subject, Projection> projection) => order.ThenBy(projection, Comparer<Projection>.Default);

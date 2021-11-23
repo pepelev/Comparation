@@ -21,6 +21,45 @@ namespace Comparation
 
         public static Order<T> Of<T>() => Order<T>.Singleton;
         public static Order<T> Of<T>(T sample) => Of<T>();
+
+        public static IComparer<KeyValuePair<Key, Value>> ForKeyValuePair<Key, Value>() =>
+            DefaultKeyValuePairOrder<Key, Value>.Singleton;
+
+        public static IComparer<KeyValuePair<Key, Value>> ForKeyValuePair<Key, Value>(
+            IComparer<Key> keyOrder,
+            IComparer<Value> valueOrder) =>
+            Of<KeyValuePair<Key, Value>>().Composite(
+                Of<KeyValuePair<Key, Value>>().By(pair => pair.Key, keyOrder),
+                Of<KeyValuePair<Key, Value>>().By(pair => pair.Value, valueOrder)
+            );
+
+        public static IComparer<(T1, T2)> ForTuple<T1, T2>(IComparer<T1> order1, IComparer<T2> order2) =>
+            Of<(T1, T2)>().Composite(
+                Of<(T1, T2)>().By(tuple => tuple.Item1, order1),
+                Of<(T1, T2)>().By(tuple => tuple.Item2, order2)
+            );
+
+        public static IComparer<(T1, T2, T3)> ForTuple<T1, T2, T3>(
+            IComparer<T1> order1,
+            IComparer<T2> order2,
+            IComparer<T3> order3) =>
+            Of<(T1, T2, T3)>().Composite(
+                Of<(T1, T2, T3)>().By(tuple => tuple.Item1, order1),
+                Of<(T1, T2, T3)>().By(tuple => tuple.Item2, order2),
+                Of<(T1, T2, T3)>().By(tuple => tuple.Item3, order3)
+            );
+
+        public static IComparer<(T1, T2, T3, T4)> ForTuple<T1, T2, T3, T4>(
+            IComparer<T1> order1,
+            IComparer<T2> order2,
+            IComparer<T3> order3,
+            IComparer<T4> order4) =>
+            Of<(T1, T2, T3, T4)>().Composite(
+                Of<(T1, T2, T3, T4)>().By(tuple => tuple.Item1, order1),
+                Of<(T1, T2, T3, T4)>().By(tuple => tuple.Item2, order2),
+                Of<(T1, T2, T3, T4)>().By(tuple => tuple.Item3, order3),
+                Of<(T1, T2, T3, T4)>().By(tuple => tuple.Item4, order4)
+            );
     }
 
     public sealed class Order<Subject>
