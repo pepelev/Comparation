@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Linq;
 
 namespace Comparation
 {
@@ -29,34 +29,7 @@ namespace Comparation
                 return false;
             }
 
-            return (GuessCount(x), GuessCount(y)) switch
-            {
-                ({ } xCount, { } yCount) => xCount == yCount && Fallback(),
-                _ => Fallback()
-            };
-
-            bool Fallback()
-            {
-                using var xEnumerator = x.GetEnumerator();
-                using var yEnumerator = y.GetEnumerator();
-                while (true)
-                {
-                    switch (xEnumerator.MoveNext(), yEnumerator.MoveNext())
-                    {
-                        case (false, false):
-                            return true;
-                        case (true, true):
-                            if (!itemEquality.Equals(xEnumerator.Current!, yEnumerator.Current!))
-                            {
-                                return false;
-                            }
-
-                            continue;
-                        default:
-                            return false;
-                    }
-                }
-            }
+            return x!.SequenceEqual(y!, itemEquality!);
         }
 
         public int GetHashCode(IEnumerable<T?> obj)
@@ -73,11 +46,5 @@ namespace Comparation
 
             return hashCode;
         }
-
-        private static int? GuessCount([NoEnumeration] IEnumerable<T?> x) => x switch
-        {
-            IReadOnlyCollection<T> collection => collection.Count,
-            _ => null
-        };
     }
 }
