@@ -113,4 +113,4 @@ order.Sign(myNumbers, lotteryNumbers); // returns Sign.Less, (14 is less than 28
 order.Sign(new[] {1, 2, 3}, new[] {1, 2}); // returns Sign.Greater, sequences match by prefix, but first is longer
 ```
 
-[^1]: Actually, negative, zero, or positive https://docs.microsoft.com/en-us/dotnet/api/system.collections.icomparer.compare
+[^1]: Actually, negative, zero, and positive https://docs.microsoft.com/en-us/dotnet/api/system.collections.icomparer.compare
