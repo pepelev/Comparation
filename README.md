@@ -42,7 +42,7 @@ pets.Add("Dog");
 pets.Add("Cat"); // Bad day for Cat ;), pets already contain element with length 3
 pets.Add("Turtle");
 
-Console.WriteLine(string.Join(", ", pets)); // returns Dog, Turtle
+string.Join(", ", pets); // returns "Dog, Turtle"
 ```
 
 And finally you can easily compare entire collections
@@ -104,7 +104,7 @@ order.Max(19, 7); // returns 19
 order.Min(19, 7); // returns 7
 ```
 
-You can also benefit from `Sign()` extension method to avoid mind-blowing work with `-1`, `0` and `1`
+You can also benefit from `Sign()` extension method to avoid [mind-blowing work](https://docs.microsoft.com/en-us/dotnet/api/system.collections.icomparer.compare) with `-1`, `0` and `1`[^1]
 
 ```csharp
 var myLuckyNumbers = new[] {1, 7, 32, 14, 4};
@@ -112,3 +112,5 @@ var lotteryNumbers = new[] {1, 7, 32, 28, 4};
 order.Sign(myNumbers, lotteryNumbers); // returns Sign.Less, (14 is less than 28)
 order.Sign(new[] {1, 2, 3}, new[] {1, 2}); // returns Sign.Greater, sequences match by prefix, but first is longer
 ```
+
+[^1]: Actually negative, zero or positive
