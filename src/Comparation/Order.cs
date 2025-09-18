@@ -22,15 +22,15 @@ namespace Comparation
         public static Order<T> Of<T>() => Order<T>.Singleton;
         public static Order<T> Of<T>(T sample) => Of<T>();
 
-        public static IComparer<KeyValuePair<Key, Value>> ForKeyValuePair<Key, Value>() =>
-            DefaultKeyValuePairOrder<Key, Value>.Singleton;
+        public static IComparer<KeyValuePair<TKey, TValue>> ForKeyValuePair<TKey, TValue>() =>
+            DefaultKeyValuePairOrder<TKey, TValue>.Singleton;
 
-        public static IComparer<KeyValuePair<Key, Value>> ForKeyValuePair<Key, Value>(
-            IComparer<Key> keyOrder,
-            IComparer<Value> valueOrder) =>
-            Of<KeyValuePair<Key, Value>>().Composite(
-                Of<KeyValuePair<Key, Value>>().By(pair => pair.Key, keyOrder),
-                Of<KeyValuePair<Key, Value>>().By(pair => pair.Value, valueOrder)
+        public static IComparer<KeyValuePair<TKey, TValue>> ForKeyValuePair<TKey, TValue>(
+            IComparer<TKey> keyOrder,
+            IComparer<TValue> valueOrder) =>
+            Of<KeyValuePair<TKey, TValue>>().Composite(
+                Of<KeyValuePair<TKey, TValue>>().By(pair => pair.Key, keyOrder),
+                Of<KeyValuePair<TKey, TValue>>().By(pair => pair.Value, valueOrder)
             );
 
         public static IComparer<(T1, T2)> ForTuple<T1, T2>(IComparer<T1> order1, IComparer<T2> order2) =>
@@ -62,31 +62,31 @@ namespace Comparation
             );
     }
 
-    public sealed class Order<Subject>
+    public sealed class Order<TSubject>
     {
-        internal static Order<Subject> Singleton { get; } = new();
+        internal static Order<TSubject> Singleton { get; } = new();
 
-        public IComparer<Subject> Trivial { get; } = Comparer<Subject>.Create(
+        public IComparer<TSubject> Trivial { get; } = Comparer<TSubject>.Create(
             (_, _) => 0
         );
 
-        public IComparer<Subject> Default => Comparer<Subject>.Default;
+        public IComparer<TSubject> Default => Comparer<TSubject>.Default;
 
-        public IComparer<Subject> By<Projection>(Func<Subject, Projection> projection) =>
-            By(projection, Comparer<Projection>.Default);
+        public IComparer<TSubject> By<TProjection>(Func<TSubject, TProjection> projection) =>
+            By(projection, Comparer<TProjection>.Default);
 
-        public IComparer<Subject> By<Projection>(Func<Subject, Projection> projection, IComparer<Projection> order) =>
-            Comparer<Subject>.Create(
+        public IComparer<TSubject> By<TProjection>(Func<TSubject, TProjection> projection, IComparer<TProjection> order) =>
+            Comparer<TSubject>.Create(
                 (a, b) => order.Compare(
                     projection(a),
                     projection(b)
                 )
             );
 
-        public IComparer<Subject> Composite(params IComparer<Subject>[] aspects) =>
-            Composite(aspects as IReadOnlyCollection<IComparer<Subject>>);
+        public IComparer<TSubject> Composite(params IComparer<TSubject>[] aspects) =>
+            Composite(aspects as IReadOnlyCollection<IComparer<TSubject>>);
 
-        public IComparer<Subject> Composite(IReadOnlyCollection<IComparer<Subject>> aspects)
+        public IComparer<TSubject> Composite(IReadOnlyCollection<IComparer<TSubject>> aspects)
         {
             if (aspects.Count == 0)
             {
@@ -101,11 +101,11 @@ namespace Comparation
             return AllowingEmptyComposite(aspects);
         }
 
-        public IComparer<Subject> AllowingEmptyComposite(params IComparer<Subject>[] aspects) =>
-            AllowingEmptyComposite(aspects as IReadOnlyCollection<IComparer<Subject>>);
+        public IComparer<TSubject> AllowingEmptyComposite(params IComparer<TSubject>[] aspects) =>
+            AllowingEmptyComposite(aspects as IReadOnlyCollection<IComparer<TSubject>>);
 
-        public IComparer<Subject> AllowingEmptyComposite(IReadOnlyCollection<IComparer<Subject>> aspects) =>
-            Comparer<Subject>.Create(
+        public IComparer<TSubject> AllowingEmptyComposite(IReadOnlyCollection<IComparer<TSubject>> aspects) =>
+            Comparer<TSubject>.Create(
                 (a, b) =>
                 {
                     foreach (var aspect in aspects)
@@ -120,10 +120,10 @@ namespace Comparation
                 }
             );
 
-        public IComparer<IEnumerable<Subject>> Sequence() => Sequence(Comparer<Subject>.Default);
+        public IComparer<IEnumerable<TSubject>> Sequence() => Sequence(Comparer<TSubject>.Default);
 
-        public IComparer<IEnumerable<Subject>> Sequence(IComparer<Subject> itemOrder) =>
-            Comparer<IEnumerable<Subject>>.Create(
+        public IComparer<IEnumerable<TSubject>> Sequence(IComparer<TSubject> itemOrder) =>
+            Comparer<IEnumerable<TSubject>>.Create(
                 (a, b) =>
                 {
                     using var aEnumerator = a.GetEnumerator();

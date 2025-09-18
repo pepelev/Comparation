@@ -3,21 +3,21 @@ using System.Linq;
 
 namespace Comparation
 {
-    public sealed class CompositeEquality<Subject> : IEqualityComparer<Subject>
+    public sealed class CompositeEquality<TSubject> : IEqualityComparer<TSubject>
     {
-        private readonly IReadOnlyCollection<IEqualityComparer<Subject>> aspects;
+        private readonly IReadOnlyCollection<IEqualityComparer<TSubject>> aspects;
 
-        public CompositeEquality(params IEqualityComparer<Subject>[] aspects)
-            : this(aspects as IReadOnlyCollection<IEqualityComparer<Subject>>)
+        public CompositeEquality(params IEqualityComparer<TSubject>[] aspects)
+            : this(aspects as IReadOnlyCollection<IEqualityComparer<TSubject>>)
         {
         }
 
-        public CompositeEquality(IReadOnlyCollection<IEqualityComparer<Subject>> aspects)
+        public CompositeEquality(IReadOnlyCollection<IEqualityComparer<TSubject>> aspects)
         {
             this.aspects = aspects;
         }
 
-        public bool Equals(Subject? x, Subject? y)
+        public bool Equals(TSubject? x, TSubject? y)
         {
             if (ReferenceEquals(x, y))
             {
@@ -37,7 +37,7 @@ namespace Comparation
             return aspects.All(aspect => aspect.Equals(x, y));
         }
 
-        public int GetHashCode(Subject obj)
+        public int GetHashCode(TSubject obj)
         {
             if (obj is null)
             {

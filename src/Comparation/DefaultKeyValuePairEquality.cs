@@ -2,12 +2,12 @@
 
 namespace Comparation
 {
-    internal static class DefaultKeyValuePairEquality<Key, Value>
+    internal static class DefaultKeyValuePairEquality<TKey, TValue>
     {
-        public static IEqualityComparer<KeyValuePair<Key, Value>> Singleton { get; } =
-            Equality.Of<KeyValuePair<Key, Value>>().Composite(
-                Equality.Of<KeyValuePair<Key, Value>>().By(pair => pair.Key),
-                Equality.Of<KeyValuePair<Key, Value>>().By(pair => pair.Value)
+        public static IEqualityComparer<KeyValuePair<TKey, TValue>> Singleton { get; } =
+            Equality.Of<KeyValuePair<TKey, TValue>>().Composite(
+                Equality.Of<KeyValuePair<TKey, TValue>>().By(pair => pair.Key),
+                Equality.Of<KeyValuePair<TKey, TValue>>().By(pair => pair.Value)
             );
     }
 }
