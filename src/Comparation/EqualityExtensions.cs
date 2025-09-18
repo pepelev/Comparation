@@ -5,31 +5,31 @@ namespace Comparation
 {
     public static class EqualityExtensions
     {
-        public static IEqualityComparer<Subject> AndBy<Subject, Projection>(
-            this IEqualityComparer<Subject> equality,
-            Func<Subject, Projection> projection) =>
-            equality.AndBy(projection, EqualityComparer<Projection>.Default);
+        public static IEqualityComparer<TSubject> AndBy<TSubject, TProjection>(
+            this IEqualityComparer<TSubject> equality,
+            Func<TSubject, TProjection> projection) =>
+            equality.AndBy(projection, EqualityComparer<TProjection>.Default);
 
-        public static IEqualityComparer<Subject> AndBy<Subject, Projection>(
-            this IEqualityComparer<Subject> equality,
-            Func<Subject, Projection> projection,
-            IEqualityComparer<Projection> projectionEquality) =>
-            Equality<Subject>.Singleton.Composite(
+        public static IEqualityComparer<TSubject> AndBy<TSubject, TProjection>(
+            this IEqualityComparer<TSubject> equality,
+            Func<TSubject, TProjection> projection,
+            IEqualityComparer<TProjection> projectionEquality) =>
+            Equality<TSubject>.Singleton.Composite(
                 equality,
-                Equality<Subject>.Singleton.By(projection, projectionEquality)
+                Equality<TSubject>.Singleton.By(projection, projectionEquality)
             );
 
-        public static IEqualityComparer<Subject> AndUsing<Subject>(
-            this IEqualityComparer<Subject> equality,
-            IEqualityComparer<Subject> anotherEquality) =>
-            Equality<Subject>.Singleton.Composite(equality, anotherEquality);
+        public static IEqualityComparer<TSubject> AndUsing<TSubject>(
+            this IEqualityComparer<TSubject> equality,
+            IEqualityComparer<TSubject> anotherEquality) =>
+            Equality<TSubject>.Singleton.Composite(equality, anotherEquality);
 
-        public static IEqualityComparer<IReadOnlyCollection<Subject>> ForCollection<Subject>(
-            this IEqualityComparer<Subject> itemEquality) =>
-            Equality<Subject>.Singleton.Collection(itemEquality);
+        public static IEqualityComparer<IReadOnlyCollection<TSubject>> ForCollection<TSubject>(
+            this IEqualityComparer<TSubject> itemEquality) =>
+            Equality<TSubject>.Singleton.Collection(itemEquality);
 
-        public static IEqualityComparer<IReadOnlyCollection<Subject>> ForSequence<Subject>(
-            this IEqualityComparer<Subject> itemEquality) =>
-            Equality<Subject>.Singleton.Sequence(itemEquality);
+        public static IEqualityComparer<IReadOnlyCollection<TSubject>> ForSequence<TSubject>(
+            this IEqualityComparer<TSubject> itemEquality) =>
+            Equality<TSubject>.Singleton.Sequence(itemEquality);
     }
 }

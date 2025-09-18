@@ -10,15 +10,15 @@ namespace Comparation
         public static IEqualityComparer<T> ByReference<T>(T sample) where T : class => ByReference<T>();
         public static IEqualityComparer<T> ByReference<T>() where T : class => ReferenceEquality<T>.Singleton;
 
-        public static IEqualityComparer<KeyValuePair<Key, Value>> ForKeyValuePair<Key, Value>() =>
-            DefaultKeyValuePairEquality<Key, Value>.Singleton;
+        public static IEqualityComparer<KeyValuePair<TKey, TValue>> ForKeyValuePair<TKey, TValue>() =>
+            DefaultKeyValuePairEquality<TKey, TValue>.Singleton;
 
-        public static IEqualityComparer<KeyValuePair<Key, Value>> ForKeyValuePair<Key, Value>(
-            IEqualityComparer<Key> keyEquality,
-            IEqualityComparer<Value> valueEquality) =>
-            Of<KeyValuePair<Key, Value>>().Composite(
-                Of<KeyValuePair<Key, Value>>().By(pair => pair.Key, keyEquality),
-                Of<KeyValuePair<Key, Value>>().By(pair => pair.Value, valueEquality)
+        public static IEqualityComparer<KeyValuePair<TKey, TValue>> ForKeyValuePair<TKey, TValue>(
+            IEqualityComparer<TKey> keyEquality,
+            IEqualityComparer<TValue> valueEquality) =>
+            Of<KeyValuePair<TKey, TValue>>().Composite(
+                Of<KeyValuePair<TKey, TValue>>().By(pair => pair.Key, keyEquality),
+                Of<KeyValuePair<TKey, TValue>>().By(pair => pair.Value, valueEquality)
             );
 
         public static IEqualityComparer<(T1, T2)> ForTuple<T1, T2>(IEqualityComparer<T1> equality1, IEqualityComparer<T2> equality2) =>
@@ -50,36 +50,36 @@ namespace Comparation
             );
     }
 
-    public sealed class Equality<Subject>
+    public sealed class Equality<TSubject>
     {
-        internal static Equality<Subject> Singleton { get; } = new();
+        internal static Equality<TSubject> Singleton { get; } = new();
 
-        public IEqualityComparer<Subject> Default => EqualityComparer<Subject>.Default;
+        public IEqualityComparer<TSubject> Default => EqualityComparer<TSubject>.Default;
 
-        public IEqualityComparer<Subject> By<Projection>(Func<Subject, Projection> projection) =>
-            By(projection, EqualityComparer<Projection>.Default);
+        public IEqualityComparer<TSubject> By<TProjection>(Func<TSubject, TProjection> projection) =>
+            By(projection, EqualityComparer<TProjection>.Default);
 
-        public IEqualityComparer<Subject> By<Projection>(
-            Func<Subject, Projection> projection,
-            IEqualityComparer<Projection> equality) =>
-            new ProjectingEquality<Subject, Projection>(projection, equality);
+        public IEqualityComparer<TSubject> By<TProjection>(
+            Func<TSubject, TProjection> projection,
+            IEqualityComparer<TProjection> equality) =>
+            new ProjectingEquality<TSubject, TProjection>(projection, equality);
 
-        public IEqualityComparer<Subject> Composite(params IEqualityComparer<Subject>[] aspects) =>
-            Composite(aspects as IReadOnlyCollection<IEqualityComparer<Subject>>);
+        public IEqualityComparer<TSubject> Composite(params IEqualityComparer<TSubject>[] aspects) =>
+            Composite(aspects as IReadOnlyCollection<IEqualityComparer<TSubject>>);
 
-        public IEqualityComparer<Subject> Composite(IReadOnlyCollection<IEqualityComparer<Subject>> aspects) =>
-            new CompositeEquality<Subject>(aspects);
+        public IEqualityComparer<TSubject> Composite(IReadOnlyCollection<IEqualityComparer<TSubject>> aspects) =>
+            new CompositeEquality<TSubject>(aspects);
 
-        public IEqualityComparer<IReadOnlyCollection<Subject?>> Collection() =>
-            Collection(EqualityComparer<Subject>.Default);
+        public IEqualityComparer<IReadOnlyCollection<TSubject?>> Collection() =>
+            Collection(EqualityComparer<TSubject>.Default);
 
-        public IEqualityComparer<IReadOnlyCollection<Subject?>> Collection(IEqualityComparer<Subject> itemEquality) =>
-            new CollectionEquality<Subject>(itemEquality);
+        public IEqualityComparer<IReadOnlyCollection<TSubject?>> Collection(IEqualityComparer<TSubject> itemEquality) =>
+            new CollectionEquality<TSubject>(itemEquality);
 
-        public IEqualityComparer<IReadOnlyCollection<Subject?>> Sequence() =>
-            Sequence(EqualityComparer<Subject>.Default);
+        public IEqualityComparer<IReadOnlyCollection<TSubject?>> Sequence() =>
+            Sequence(EqualityComparer<TSubject>.Default);
 
-        public IEqualityComparer<IReadOnlyCollection<Subject?>> Sequence(IEqualityComparer<Subject> itemEquality) =>
-            new SequenceEquality<Subject>(itemEquality);
+        public IEqualityComparer<IReadOnlyCollection<TSubject?>> Sequence(IEqualityComparer<TSubject> itemEquality) =>
+            new SequenceEquality<TSubject>(itemEquality);
     }
 }

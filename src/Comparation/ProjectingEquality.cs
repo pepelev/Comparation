@@ -4,18 +4,18 @@ using System.Collections.Generic;
 namespace Comparation
 {
     // todo make interface generic parameter nullable
-    public sealed class ProjectingEquality<Subject, Projection> : IEqualityComparer<Subject>
+    public sealed class ProjectingEquality<TSubject, TProjection> : IEqualityComparer<TSubject>
     {
-        private readonly Func<Subject, Projection> projection;
-        private readonly IEqualityComparer<Projection> equality;
+        private readonly Func<TSubject, TProjection> projection;
+        private readonly IEqualityComparer<TProjection> equality;
 
-        public ProjectingEquality(Func<Subject, Projection> projection, IEqualityComparer<Projection> equality)
+        public ProjectingEquality(Func<TSubject, TProjection> projection, IEqualityComparer<TProjection> equality)
         {
             this.projection = projection;
             this.equality = equality;
         }
 
-        public bool Equals(Subject? x, Subject? y)
+        public bool Equals(TSubject? x, TSubject? y)
         {
             if (ReferenceEquals(x, y))
             {
@@ -38,7 +38,7 @@ namespace Comparation
             );
         }
 
-        public int GetHashCode(Subject obj) => projection(obj) is { } value
+        public int GetHashCode(TSubject obj) => projection(obj) is { } value
             ? equality.GetHashCode(value)
             : 0;
     }

@@ -30,28 +30,28 @@ namespace Comparation
 
         public static bool Equals<T>(this IComparer<T> order, T a, T b) => order.Sign(a, b) == Order.Sign.Equal;
 
-        public static IComparer<Subject> ThenBy<Subject, Projection>(
-            this IComparer<Subject> order,
-            Func<Subject, Projection> projection) => order.ThenBy(projection, Comparer<Projection>.Default);
+        public static IComparer<TSubject> ThenBy<TSubject, TProjection>(
+            this IComparer<TSubject> order,
+            Func<TSubject, TProjection> projection) => order.ThenBy(projection, Comparer<TProjection>.Default);
 
-        public static IComparer<Subject> ThenBy<Subject, Projection>(
-            this IComparer<Subject> order,
-            Func<Subject, Projection> projection,
-            IComparer<Projection> projectionOrder) =>
-            Order<Subject>.Singleton.Composite(
+        public static IComparer<TSubject> ThenBy<TSubject, TProjection>(
+            this IComparer<TSubject> order,
+            Func<TSubject, TProjection> projection,
+            IComparer<TProjection> projectionOrder) =>
+            Order<TSubject>.Singleton.Composite(
                 order,
-                Order<Subject>.Singleton.By(projection, projectionOrder)
+                Order<TSubject>.Singleton.By(projection, projectionOrder)
             );
 
-        public static IComparer<Subject> ThenUsing<Subject>(
-            this IComparer<Subject> order,
-            IComparer<Subject> anotherOrder) =>
-            Order<Subject>.Singleton.Composite(
+        public static IComparer<TSubject> ThenUsing<TSubject>(
+            this IComparer<TSubject> order,
+            IComparer<TSubject> anotherOrder) =>
+            Order<TSubject>.Singleton.Composite(
                 order,
                 anotherOrder
             );
 
-        public static IComparer<IEnumerable<Subject>> ForSequence<Subject>(this IComparer<Subject> itemOrder) =>
-            Order<Subject>.Singleton.Sequence(itemOrder);
+        public static IComparer<IEnumerable<TSubject>> ForSequence<TSubject>(this IComparer<TSubject> itemOrder) =>
+            Order<TSubject>.Singleton.Sequence(itemOrder);
     }
 }
