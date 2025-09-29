@@ -7,10 +7,10 @@ namespace Comparation.Tests.Equality.Aspects
     public sealed class EqualityShouldGiveSameHashCodeForEqualObjects<T> : Test
     {
         private readonly IEqualityComparer<T> equality;
-        private readonly T a;
-        private readonly T b;
+        private readonly T? a;
+        private readonly T? b;
 
-        public EqualityShouldGiveSameHashCodeForEqualObjects(IEqualityComparer<T> equality, T a, T b)
+        public EqualityShouldGiveSameHashCodeForEqualObjects(IEqualityComparer<T> equality, T? a, T? b)
         {
             this.equality = equality;
             this.a = a;

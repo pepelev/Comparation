@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+#if NET6_0_OR_GREATER
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+#endif
 
 namespace Comparation
 {
@@ -77,10 +81,14 @@ namespace Comparation
             foreach (var item in x)
             {
                 var box = new Box<T?>(item);
+#if NET6_0_OR_GREATER
+                CollectionsMarshal.GetValueRefOrAddDefault(counts, box, out _)++;
+#else
                 var newCount = counts.TryGetValue(box, out var count)
                     ? count + 1
                     : 1;
                 counts[box] = newCount;
+#endif
             }
 
             return counts;
@@ -91,21 +99,33 @@ namespace Comparation
             foreach (var item in y)
             {
                 var box = new Box<T?>(item);
+#if NET6_0_OR_GREATER
+                ref var count = ref CollectionsMarshal.GetValueRefOrNullRef(counts, box);
+                if (Unsafe.IsNullRef(ref count))
+                {
+                    return false;
+                }
+
+                count--;
+                if (count < 0)
+                {
+                    return false;
+                }
+#else
                 if (counts.TryGetValue(box, out var count))
                 {
-                    if (count == 1)
+                    if (count <= 0)
                     {
-                        counts.Remove(box);
+                        return false;
                     }
-                    else
-                    {
-                        counts[box] = count - 1;
-                    }
+
+                    counts[box] = count - 1;
                 }
                 else
                 {
                     return false;
                 }
+#endif
             }
 
             return true;

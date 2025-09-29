@@ -24,16 +24,20 @@ namespace Comparation
                 this.equality = equality;
             }
 
-            public bool Equals(Box<T?> x, Box<T?> y) => (x.value, y.value) switch
-            {
-                ({ } a, { } b) => equality.Equals(a, b),
-                (null, null) => true,
-                _ => false
-            };
+#if NETSTANDARD2_0 || NETSTANDARD2_1
+            public bool Equals(Box<T?> x, Box<T?> y) => equality.Equals(x.value!, y.value!);
+#else
+            public bool Equals(Box<T?> x, Box<T?> y) => equality.Equals(x.value, y.value);
+#endif
 
             public int GetHashCode(Box<T?> obj) => obj.value is { } value
                 ? equality.GetHashCode(value)
                 : 0;
         }
+    }
+
+    internal static class Box
+    {
+        public static Box<T> Wrap<T>(T item) => new(item);
     }
 }

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 
 namespace Comparation
 {
-    // todo make interface generic parameter nullable
     public sealed class ProjectingEquality<TSubject, TProjection> : IEqualityComparer<TSubject>
     {
-        private readonly Func<TSubject, TProjection> projection;
+        private readonly Func<TSubject, TProjection?> projection;
         private readonly IEqualityComparer<TProjection> equality;
 
-        public ProjectingEquality(Func<TSubject, TProjection> projection, IEqualityComparer<TProjection> equality)
+        public ProjectingEquality(Func<TSubject, TProjection?> projection, IEqualityComparer<TProjection> equality)
         {
             this.projection = projection;
             this.equality = equality;
@@ -32,10 +31,17 @@ namespace Comparation
                 return false;
             }
 
+#if NETSTANDARD2_0 || NETSTANDARD2_1
+            return equality.Equals(
+                projection(x)!,
+                projection(y)!
+            );
+#else
             return equality.Equals(
                 projection(x),
                 projection(y)
             );
+#endif
         }
 
         public int GetHashCode(TSubject obj) => projection(obj) is { } value

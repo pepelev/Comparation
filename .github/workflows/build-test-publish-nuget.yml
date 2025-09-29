@@ -16,12 +16,12 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 5.0.103
+        dotnet-version: 8.0.*
 
     - name: Install dependencies
       run: dotnet restore
@@ -33,13 +33,27 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
 
     - name: Publish on version change
-      id: publish_nuget
-      uses: rohith/publish-nuget@v2
-      with:
-        PROJECT_FILE_PATH: ./src/Comparation/Comparation.csproj
-        VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
-        TAG_COMMIT: true
-        TAG_FORMAT: v*
-        NUGET_KEY: ${{secrets.NUGETKEY}}
-        NUGET_SOURCE: https://api.nuget.org
-        INCLUDE_SYMBOLS: true
+      shell: bash
+      env:
+        NUGETKEY: ${{ secrets.NUGETKEY }}        
+      run: |
+        function publish_project() {
+          ProjectName="$1"
+          Version=$(grep --only-matching --perl-regex '<Version>[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z-]+)?</Version>' "$ProjectName/$ProjectName.csproj" | grep --only-matching --perl-regex '[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z-]+)?')
+          echo "Version=$Version"
+          if test -z "$Version"; then
+            echo "Could not get version from $ProjectName.csproj"
+            exit 1
+          fi
+          git fetch --tags
+          if test -n "$(git tag --list "$ProjectName-$Version" | tr -d '[:space:]')"; then
+            echo "Version $Version already exists for $ProjectName"
+          else
+            rm -rf nuget
+            dotnet pack "$ProjectName" --configuration Release --no-build --include-symbols --nologo --output nuget &&\
+            dotnet nuget push nuget/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key "$NUGETKEY" --skip-duplicate &&\
+            git tag "$ProjectName-$Version" && git push origin "$ProjectName-$Version" || { echo "Error occurred"; exit 1; }
+          fi
+        }
+
+        publish_project Comparation
