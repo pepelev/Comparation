@@ -8,13 +8,13 @@ namespace Comparation.Tests
     [Parallelizable(ParallelScope.All)]
     public sealed class TestsEntryPoint
     {
-        // [Test]
-        // [TestCaseSource(typeof(Equality.Cases))]
-        // [TestCaseSource(typeof(Order.Cases))]
-        // public void Run(Test test)
-        // {
-        //     test.Run();
-        // }
+        [Test]
+        [TestCaseSource(typeof(Equality.Cases))]
+        [TestCaseSource(typeof(Order.Cases))]
+        public void Run(Test test)
+        {
+            test.Run();
+        }
 
         [Test]
         public void FakeTest()
