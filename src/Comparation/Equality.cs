@@ -56,11 +56,11 @@ namespace Comparation
 
         public IEqualityComparer<TSubject> Default => EqualityComparer<TSubject>.Default;
 
-        public IEqualityComparer<TSubject> By<TProjection>(Func<TSubject, TProjection> projection) =>
+        public IEqualityComparer<TSubject> By<TProjection>(Func<TSubject, TProjection?> projection) =>
             By(projection, EqualityComparer<TProjection>.Default);
 
         public IEqualityComparer<TSubject> By<TProjection>(
-            Func<TSubject, TProjection> projection,
+            Func<TSubject, TProjection?> projection,
             IEqualityComparer<TProjection> equality) =>
             new ProjectingEquality<TSubject, TProjection>(projection, equality);
 

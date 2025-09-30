@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;net5.0</TargetFrameworks>
+    <TargetFrameworks>net48;net8</TargetFrameworks>
     <OutputPath>..\..\bin\Comparation.Tests</OutputPath>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>9</LangVersion>
@@ -13,7 +13,7 @@
     <Nullable>annotations</Nullable>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(TargetFramework) == 'net5.0'">
+  <PropertyGroup Condition="$(TargetFramework) == 'net8'">
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
