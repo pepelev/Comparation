@@ -46,13 +46,13 @@ jobs:
             exit 1
           fi
           git fetch --tags
-          if test -n "$(git tag --list "$ProjectName-$Version" | tr -d '[:space:]')"; then
+          if test -n "$(git tag --list "v$Version" | tr -d '[:space:]')"; then
             echo "Version $Version already exists for $ProjectName"
           else
             rm -rf nuget
             dotnet pack "$ProjectName" --configuration Release --no-build --include-symbols --nologo --output nuget &&\
             dotnet nuget push nuget/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key "$NUGETKEY" --skip-duplicate &&\
-            git tag "$ProjectName-$Version" && git push origin "$ProjectName-$Version" || { echo "Error occurred"; exit 1; }
+            git tag "v$Version" && git push origin "v$Version" || { echo "Error occurred"; exit 1; }
           fi
         }
 
