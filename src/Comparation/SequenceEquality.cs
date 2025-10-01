@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿#if !NETSTANDARD2_0
+using System;
+#endif
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Comparation
@@ -29,22 +32,22 @@ namespace Comparation
                 return false;
             }
 
-            return x!.SequenceEqual(y!, itemEquality!);
+            return x!.SequenceEqual(y!, itemEquality);
         }
 
         public int GetHashCode(IEnumerable<T?> obj)
         {
-            var hashCode = 0;
+            var hash = new HashCode();
             foreach (var item in obj)
             {
-                var itemHashCode = item is { } value
+                var itemHash = item is { } value
                     ? itemEquality.GetHashCode(value)
                     : 0;
 
-                hashCode = unchecked((hashCode * 397) ^ itemHashCode);
+                hash.Add(itemHash);
             }
 
-            return hashCode;
+            return hash.ToHashCode();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 #if NET6_0_OR_GREATER
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -44,32 +43,10 @@ namespace Comparation
 
         public int GetHashCode(IReadOnlyCollection<T?> collection)
         {
-            var count = collection.Count;
-#if NETCOREAPP2_1_OR_GREATER
-            var hashCodes = count <= 1024 / sizeof(int)
-                ? stackalloc int[count]
-                : new int[count];
-#else
-            var hashCodes = new int[count];
-#endif
-            var i = 0;
+            var resultHashCode = 0;
             foreach (var item in collection)
             {
-                hashCodes[i++] = itemEquality.GetHashCode(new Box<T?>(item));
-            }
-
-#if NETCOREAPP2_1_OR_GREATER
-            hashCodes.Sort();
-#else
-            Array.Sort(hashCodes);
-#endif
-
-            var resultHashCode = 0;
-            foreach (var hashCode in hashCodes)
-            {
-                resultHashCode = unchecked(
-                    (resultHashCode * 397) ^ hashCode
-                );
+                resultHashCode ^= itemEquality.GetHashCode(new Box<T?>(item));
             }
 
             return resultHashCode;
