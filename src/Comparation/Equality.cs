@@ -67,6 +67,11 @@ namespace Comparation
 
         public IEqualityComparer<TSubject> Composite(params IEqualityComparer<TSubject>[] aspects)
         {
+            if (aspects.Length == 1)
+            {
+                return aspects[0];
+            }
+
             if (aspects.Length == 2)
             {
                 return new CompoundEquality<TSubject>(aspects[0], aspects[1]);
