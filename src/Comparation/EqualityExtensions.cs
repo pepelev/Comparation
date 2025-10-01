@@ -31,5 +31,9 @@ namespace Comparation
         public static IEqualityComparer<IReadOnlyCollection<TSubject>> ForSequence<TSubject>(
             this IEqualityComparer<TSubject> itemEquality) =>
             Equality<TSubject>.Singleton.Sequence(itemEquality);
+
+        public static IEqualityComparer<IReadOnlyCollection<TSubject>> ForSet<TSubject>(
+            this IEqualityComparer<TSubject> itemEquality) =>
+            Equality<TSubject>.Singleton.Set(itemEquality);
     }
 }

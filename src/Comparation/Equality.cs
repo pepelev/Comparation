@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Comparation
 {
@@ -64,11 +65,18 @@ namespace Comparation
             IEqualityComparer<TProjection> equality) =>
             new ProjectingEquality<TSubject, TProjection>(projection, equality);
 
-        public IEqualityComparer<TSubject> Composite(params IEqualityComparer<TSubject>[] aspects) =>
-            Composite(aspects as IReadOnlyCollection<IEqualityComparer<TSubject>>);
+        public IEqualityComparer<TSubject> Composite(params IEqualityComparer<TSubject>[] aspects)
+        {
+            if (aspects.Length == 2)
+            {
+                return new CompoundEquality<TSubject>(aspects[0], aspects[1]);
+            }
+
+            return new CompositeEquality<TSubject>(aspects);
+        }
 
         public IEqualityComparer<TSubject> Composite(IReadOnlyCollection<IEqualityComparer<TSubject>> aspects) =>
-            new CompositeEquality<TSubject>(aspects);
+            Composite(aspects.ToArray());
 
         public IEqualityComparer<IReadOnlyCollection<TSubject?>> Collection() =>
             Collection(EqualityComparer<TSubject>.Default);
@@ -81,5 +89,11 @@ namespace Comparation
 
         public IEqualityComparer<IReadOnlyCollection<TSubject?>> Sequence(IEqualityComparer<TSubject> itemEquality) =>
             new SequenceEquality<TSubject>(itemEquality);
+
+        public IEqualityComparer<IReadOnlyCollection<TSubject?>> Set() =>
+            Set(EqualityComparer<TSubject>.Default);
+
+        public IEqualityComparer<IReadOnlyCollection<TSubject?>> Set(IEqualityComparer<TSubject> itemEquality) =>
+            new SetEquality<TSubject>(itemEquality);
     }
 }

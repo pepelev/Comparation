@@ -1,20 +1,23 @@
-﻿using System.Collections.Generic;
+﻿#if !NETSTANDARD2_0
+using System;
+#endif
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Comparation
 {
     public sealed class CompositeEquality<TSubject> : IEqualityComparer<TSubject>
     {
-        private readonly IReadOnlyCollection<IEqualityComparer<TSubject>> aspects;
+        private readonly IEqualityComparer<TSubject>[] aspects;
 
         public CompositeEquality(params IEqualityComparer<TSubject>[] aspects)
-            : this(aspects as IReadOnlyCollection<IEqualityComparer<TSubject>>)
         {
+            this.aspects = aspects;
         }
 
         public CompositeEquality(IReadOnlyCollection<IEqualityComparer<TSubject>> aspects)
+            : this(aspects.ToArray())
         {
-            this.aspects = aspects;
         }
 
         public bool Equals(TSubject? x, TSubject? y)
@@ -34,7 +37,15 @@ namespace Comparation
                 return false;
             }
 
-            return aspects.All(aspect => aspect.Equals(x, y));
+            foreach (var aspect in aspects)
+            {
+                if (!aspect.Equals(x, y))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public int GetHashCode(TSubject obj)
@@ -44,12 +55,14 @@ namespace Comparation
                 return 0;
             }
 
-            return aspects.Aggregate(
-                0,
-                (hashCode, aspect) => unchecked(
-                    (hashCode * 397) ^ aspect.GetHashCode(obj)
-                )
-            );
+            var hash = new HashCode();
+            foreach (var aspect in aspects)
+            {
+                var aspectHash = aspect.GetHashCode(obj);
+                hash.Add(aspectHash);
+            }
+
+            return hash.ToHashCode();
         }
     }
 }
