@@ -20,9 +20,113 @@ namespace Comparation
             ? a
             : b;
 
+#if NET6_0_OR_GREATER
+        public static T Max<T>(this IComparer<T> order, T first, params ReadOnlySpan<T> others)
+        {
+            var max = first;
+            foreach (var another in others)
+            {
+                max = order.Max(another, max);
+            }
+
+            return max;
+        }
+
+        public static T MaxOrThrow<T>(this IComparer<T> order, params ReadOnlySpan<T> items)
+        {
+            if (items.Length == 0)
+            {
+                throw new ArgumentException("is empty", paramName: nameof(items));
+            }
+
+            var max = items[0];
+            for (var i = 1; i < items.Length; i++)
+            {
+                var item = items[i];
+                max = order.Max(max, item);
+            }
+
+            return max;
+        }
+
+        public static int MaxIndexOrThrow<T>(this IComparer<T> order, params ReadOnlySpan<T> items)
+        {
+            if (items.Length == 0)
+            {
+                throw new ArgumentException("is empty", paramName: nameof(items));
+            }
+
+            var max = items[0];
+            var maxIndex = 0;
+            for (var i = 1; i < items.Length; i++)
+            {
+                var item = items[i];
+                if (order.Sign(item, max) == Order.Sign.Greater)
+                {
+                    max = item;
+                    maxIndex = i;
+                }
+            }
+
+            return maxIndex;
+        }
+#endif
+
         public static T Min<T>(this IComparer<T> order, T a, T b) => order.Sign(a, b) != Order.Sign.Greater
             ? a
             : b;
+
+#if NET6_0_OR_GREATER
+        public static T Min<T>(this IComparer<T> order, T first, params ReadOnlySpan<T> others)
+        {
+            var min = first;
+            foreach (var another in others)
+            {
+                min = order.Min(min, another);
+            }
+
+            return min;
+        }
+
+        public static T MinOrThrow<T>(this IComparer<T> order, params ReadOnlySpan<T> items)
+        {
+            if (items.Length == 0)
+            {
+                throw new ArgumentException("is empty", paramName: nameof(items));
+            }
+
+            var min = items[0];
+            for (var i = 1; i < items.Length; i++)
+            {
+                var item = items[i];
+                min = order.Min(min, item);
+            }
+
+            return min;
+        }
+
+        public static int MinIndexOrThrow<T>(this IComparer<T> order, params ReadOnlySpan<T> items)
+        {
+            if (items.Length == 0)
+            {
+                throw new ArgumentException("is empty", paramName: nameof(items));
+            }
+
+            var min = items[0];
+            var minIndex = 0;
+            for (var i = 1; i < items.Length; i++)
+            {
+                var item = items[i];
+                if (order.Sign(item, min) == Order.Sign.Less)
+                {
+                    min = item;
+                    minIndex = i;
+                }
+            }
+
+            return minIndex;
+        }
+#endif
 
         public static IComparer<T> Invert<T>(this IComparer<T> order) => Comparer<T>.Create(
             (a, b) => order.Compare(b, a)

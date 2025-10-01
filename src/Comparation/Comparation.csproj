@@ -4,7 +4,7 @@
     <OutputPath>..\..\bin\Comparation</OutputPath>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net6</TargetFrameworks>
-    <LangVersion>9</LangVersion>
+    <LangVersion>13</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
